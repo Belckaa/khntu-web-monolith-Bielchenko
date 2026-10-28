@@ -103,8 +103,18 @@ express-monolith-starter/
 ---
 
 ## 🗂 ER-діаграма
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#2b2d42",
+    "primaryTextColor": "#ffffff",
+    "primaryBorderColor": "#8d99ae",
+    "lineColor": "#ef233c",
+    "secondaryColor": "#8d99ae",
+    "tertiaryColor": "#edf2f4"
+  }
+}}%%
 
-```mermaid
 erDiagram
     USER ||--o{ ORDER : places
     CATEGORY ||--o{ PRODUCT : contains
@@ -144,10 +154,3 @@ erDiagram
         int quantity
         float priceAtPurchase
     }
-```
-
-**Пояснення зв'язків:**
-- `USER ||--o{ ORDER` — **1:N**. Один користувач → багато замовлень; замовлення має рівно одного користувача.
-- `CATEGORY ||--o{ PRODUCT` — **1:N**. Одна категорія → багато товарів; товар має рівно одну категорію.
-- `ORDER ||--|{ ORDER_ITEM` та `PRODUCT ||--o{ ORDER_ITEM` — разом утворюють **N:M** між `ORDER` і `PRODUCT` через проміжкову сутність `ORDER_ITEM`.
-- Проміжкова таблиця `ORDER_ITEM` має **власні атрибути** `quantity` і `priceAtPurchase`, які описують сам факт зв'язку «замовлення ↔ товар».
