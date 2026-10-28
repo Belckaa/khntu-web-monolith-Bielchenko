@@ -29,7 +29,7 @@
 5. **Перевірте працездатність:**
    Відкрийте в браузері або Postman: `http://localhost:3000/api/v1/health`
 
-## 📁 Структура проєкта (Початковий рівень ЛР 1)
+## 📁 Структура проєкта (Початковий рівень)
 
 ```text
 express-monolith-starter/
@@ -102,7 +102,7 @@ express-monolith-starter/
 
 ---
 
-## 🗂 ER-діаграма
+## ER-діаграма
 
 ```mermaid
 erDiagram
