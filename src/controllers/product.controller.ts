@@ -4,18 +4,26 @@ import { ProductService } from '../services/product.service';
 const productService = new ProductService();
 
 export class ProductController {
-  static getAll(req: Request, res: Response) {
-    const items = productService.getAll();
-    res.status(200).json({ status: 'success', data: items });
+  static async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Отримуємо параметри пагінації з URL (наприклад: ?page=1&limit=5)
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
+      
+      const result = await productService.getAll(page, limit);
+      res.status(200).json({ status: 'success', ...result });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  static getById(req: Request, res: Response, next: NextFunction) {
+  static async create(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = Number(req.params.id);
-      const item = productService.getById(id);
-      res.status(200).json({ status: 'success', data: item });
+      // req.body вже провалідовано middleware та очищено
+      const item = await productService.create(req.body);
+      res.status(201).json({ status: 'success', data: item });
     } catch (error) {
-      next(error); // Передаємо помилку в errorHandler
+      next(error);
     }
   }
 }

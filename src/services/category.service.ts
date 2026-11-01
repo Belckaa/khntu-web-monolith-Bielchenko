@@ -1,18 +1,22 @@
+import { prisma } from '../utils/prisma';
 import { AppError } from '../utils/AppError';
 
 export class CategoryService {
-  private categories = [
-    { id: 1, title: 'Електроніка' },
-    { id: 2, title: 'Побутова техніка' }
-  ];
-
-  getAll() { 
-    return this.categories; 
+  async getAll() {
+    return await prisma.category.findMany({
+      orderBy: { id: 'asc' },
+    });
   }
 
-  getById(id: number) {
-    const category = this.categories.find(c => c.id === id);
-    if (!category) throw new AppError('Категорію не знайдено', 404);
+  async getById(id: number) {
+    const category = await prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!category) {
+      throw new AppError('Категорію не знайдено', 404);
+    }
+
     return category;
   }
 }

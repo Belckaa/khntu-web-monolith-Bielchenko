@@ -1,18 +1,13 @@
-import { AppError } from '../utils/AppError';
+import { ProductRepository } from '../repositories/product.repository';
+
+const productRepository = new ProductRepository();
 
 export class ProductService {
-  private products = [
-    { id: 1, title: 'Ноутбук Lenovo', price: 25000, categoryId: 1 },
-    { id: 2, title: 'Смартфон Samsung', price: 15000, categoryId: 1 }
-  ];
-
-  getAll() { 
-    return this.products; 
+  async getAll(page: number, limit: number) {
+    return await productRepository.findPaginated(page, limit);
   }
 
-  getById(id: number) {
-    const product = this.products.find(p => p.id === id);
-    if (!product) throw new AppError('Товар не знайдено', 404);
-    return product;
+  async create(data: { title: string; price: number; categoryId: number }) {
+    return await productRepository.create(data);
   }
 }
