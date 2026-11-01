@@ -10,4 +10,8 @@ export class ProductService {
   async create(data: { title: string; price: number; categoryId: number }) {
     return await productRepository.create(data);
   }
+
+  async delete(id: number) {
+    return await productRepository.delete(id);
+  }
 }

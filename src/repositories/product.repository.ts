@@ -3,54 +3,41 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export class ProductRepository {
   async findPaginated(page: number = 1, limit: number = 10) {
-    if (page < 1 || limit < 1) {
-      throw new Error('Page and limit must be greater than 0');
-    }
-
     const skip = (page - 1) * limit;
+    
+    const [items, total] = await Promise.all([
+      prisma.product.findMany({
+        skip,
+        take: limit,
+        orderBy: { id: 'desc' },
+      }),
+      prisma.product.count(),
+    ]);
 
+    return {
+      items,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async create(data: { title: string; price: number; categoryId: number }) {
     try {
-      const [items, total] = await Promise.all([
-        prisma.product.findMany({
-          skip,
-          take: limit,
-          orderBy: { id: 'desc' },
-        }),
-        prisma.product.count(),
-      ]);
-
-      return {
-        items,
-        total,
-        page,
-        totalPages: Math.ceil(total / limit),
-      };
-    } catch (error: unknown) {
-      console.error('Error fetching products:', error);
+      return await prisma.product.create({ data });
+    } catch (error) {
+      console.error('Error creating product:', error);
       throw error;
     }
   }
 
-  async create(data: {
-    title: string;
-    price: number;
-    categoryId: number;
-  }) {
+  async delete(id: number) {
     try {
-      return await prisma.product.create({
-        data,
-      });
-    } catch (error: unknown) {
-      if (
-        error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2021'
-      ) {
-        throw new Error(
-          'Таблица Product не существует. Примените миграции Prisma.'
-        );
+      return await prisma.product.delete({ where: { id } });
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2025') {
+        throw new Error('Товар не знайдено');
       }
-
-      console.error('Error creating product:', error);
       throw error;
     }
   }
